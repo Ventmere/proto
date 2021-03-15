@@ -1,0 +1,11 @@
+syntax = "proto3";
+package ventmere.s2.core.inbound_shipment;
+
+service S2InboundShipment {
+  rpc GetAllOpenShipmentChannelIds(GetAllOpenShipmentChannelIdsRequest)
+      returns (GetAllOpenShipmentChannelIdsReply) {}
+}
+
+message GetAllOpenShipmentChannelIdsRequest { int32 channel_account_id = 1; }
+
+message GetAllOpenShipmentChannelIdsReply { repeated string ids = 1; }

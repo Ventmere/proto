@@ -1,0 +1,83 @@
+syntax = "proto3";
+package ventmere.s2.core.product;
+
+import "google/protobuf/wrappers.proto";
+
+import "ventmere/s2/core/brand.proto";
+
+service S2Product {
+  rpc GetProductListByIds(GetProductListByIdsRequest)
+      returns (GetProductListByIdsReply) {}
+  rpc ResolveCountryAsinProducts(ResolveCountryAsinProductsRequest)
+      returns (ResolveCountryAsinProductsReply) {}
+}
+
+enum ProductStatus {
+  Unknown = 0;
+  Upcoming = 1;
+  Active = 2;
+  Discontinued = 3;
+  Unavailable = 4;
+  StopSale = 5;
+}
+
+message ProductEntry {
+  int32 id = 1;
+  google.protobuf.Int32Value parent_id = 31;
+  bool is_parent = 32;
+  string sku = 2;
+  google.protobuf.StringValue upc = 3;
+  string title = 4;
+  ProductStatus status = 5;
+  string remarks = 6;
+  string fob = 7;
+  string cost = 8;
+  string price = 9;
+  int32 case_pack = 10;
+  string commission_rate = 11;
+  ventmere.s2.core.brand.Brand brand = 12;
+  google.protobuf.StringValue image_main = 13;
+  google.protobuf.DoubleValue package_length_mm = 14;
+  google.protobuf.DoubleValue package_width_mm = 15;
+  google.protobuf.DoubleValue package_height_mm = 16;
+  google.protobuf.DoubleValue shipping_weight_kg = 17;
+  google.protobuf.DoubleValue case_length_mm = 18;
+  google.protobuf.DoubleValue case_width_mm = 19;
+  google.protobuf.DoubleValue case_height_mm = 20;
+  google.protobuf.DoubleValue case_weight_kg = 21;
+  bool is_archived = 22;
+  bool do_not_ship_to_fba = 23;
+  google.protobuf.StringValue league = 24;
+  google.protobuf.StringValue country_id = 25;
+  google.protobuf.StringValue manufacture_id = 26;
+  string category = 27;
+  repeated string countries = 28;
+}
+
+message ResolveCountryAsinProductsRequest {
+  repeated ResolveCountryAsinProductsItem items = 1;
+  bool include_products = 2;
+}
+
+message ResolveCountryAsinProductsItem {
+  string country_id = 1;
+  repeated string asins = 2;
+}
+
+message AsinProducts {
+  string asin = 1;
+  repeated int32 product_ids = 2;
+}
+
+message CountryAsinProducts {
+  string country_id = 1;
+  repeated AsinProducts items = 2;
+}
+
+message ResolveCountryAsinProductsReply {
+  repeated CountryAsinProducts items = 1;
+  repeated ProductEntry products = 2;
+}
+
+message GetProductListByIdsRequest { repeated int32 ids = 1; }
+message GetProductListByIdsReply { repeated ProductEntry products = 1; }

@@ -1,0 +1,12 @@
+syntax = "proto3";
+package ventmere.s2.core.brand;
+
+import "google/protobuf/timestamp.proto";
+
+message Brand {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}

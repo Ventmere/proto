@@ -1,0 +1,166 @@
+syntax = "proto3";
+package ventmere.s2.core.inventory;
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "ventmere/s2/core/brand.proto";
+
+service S2Inventory {
+  rpc QueryProductFulfillableInventory(QueryProductFulfillableInventoryRequest)
+      returns (QueryProductFulfillableInventoryReply) {}
+
+  rpc ImportFbaInventoryItems(ImportFbaInventoryItemsRequest)
+      returns (google.protobuf.Empty) {}
+
+  rpc QueryFbaWarehouseProducts(QueryFbaWarehouseProductsRequest)
+      returns (QueryFbaWarehouseProductsReply) {}
+
+  rpc QueryWarehouseEventsSum(QueryWarehouseEventsSumRequest)
+      returns (QueryWarehouseEventsSumReply) {}
+}
+
+message QueryWarehouseEventsSumRequest {
+  google.protobuf.Int32Value after_event_id = 1;
+  repeated string warehouse_ids = 2;
+  repeated int32 product_ids = 3;
+}
+
+message QueryWarehouseEventsSumReply {
+  google.protobuf.Int32Value after_event_id = 1;
+  repeated InventoryItem inventory_items = 2;
+}
+
+message InventoryWarehouse {
+  string id = 1;
+  google.protobuf.Int32Value system_id = 2;
+  string name = 3;
+  string type = 4;
+  int32 lead_days = 5;
+  bool is_dropshipper = 6;
+  bool is_fulfillment_center = 7;
+  bool is_rma_center = 8;
+  bool manage_inventory = 9;
+  repeated string countries = 10;
+  google.protobuf.Int32Value channel_account_id = 11;
+  google.protobuf.StringValue fulfillment_service = 12;
+  InventoryWarehouseMeta meta = 13;
+}
+
+message InventoryWarehouseMeta {
+  string warehouse_id = 6;
+  repeated ventmere.s2.core.brand.Brand brands = 1;
+  repeated string amazon_prime_templates = 2;
+  InventoryWarehouseAddress address = 3;
+  google.protobuf.StringValue address_country_id = 4;
+  google.protobuf.StringValue address_name = 5;
+}
+
+message InventoryWarehouseAddress {
+  string address1 = 1;
+  google.protobuf.StringValue address2 = 2;
+  string city = 3;
+  string country_id = 4;
+  string province = 5;
+  string zip = 6;
+  string phone = 7;
+  google.protobuf.StringValue name = 8;
+}
+
+message QueryProductFulfillableInventoryRequest {
+  repeated int32 products = 1;
+  repeated SalesChannel sales_channels = 2;
+}
+
+message QueryProductFulfillableInventoryReply {
+  repeated InventoryWarehouse warehouses = 1;
+  repeated FulfillableInventory items = 2;
+}
+
+enum HoldKind {
+  Unknown = 0;
+  Order = 1;
+}
+
+message SalesChannel {
+  int32 channel_account_id = 1;
+  string sub_channel_id = 2;
+}
+
+message FulfillableInventoryDetail {
+  string warehouse_id = 1;
+  int32 quantity = 2;
+}
+
+message HoldInventoryDetail {
+  HoldKind kind = 1;
+  int32 channel_account_id = 2;
+  string sub_channel_id = 3;
+  int32 quantity = 4;
+}
+
+message FulfillableInventory {
+  int32 product_id = 1;
+  bool product_sellable = 2;
+  SalesChannel sales_channel = 3;
+  int32 reserved_quantity = 4;
+  int32 hold_quantity = 5;
+  int32 inventory_quantity = 6;
+  int32 total_quantity = 7;
+  repeated FulfillableInventoryDetail inventory_details = 8;
+  repeated HoldInventoryDetail hold_details = 9;
+}
+
+message ImportFbaInventoryItemsRequest {
+  int32 account_id = 1;
+  string marketplace_id = 2;
+  repeated FbaInventoryItem items = 3;
+}
+
+message FbaInventoryItem {
+  string fnsku = 1;
+  int32 product_id = 2;
+  int32 in_stock_quantity = 3;
+  repeated FbaInventoryDetail detail = 4;
+}
+
+message FbaInventoryDetail {
+  int32 quantity = 1;
+  FbaSupplyType supply_type = 2;
+}
+
+enum FbaSupplyType {
+  FbaSupplyTypeUnknown = 0;
+  FbaSupplyTypeInStock = 1;
+  FbaSupplyTypeInbound = 2;
+  FbaSupplyTypeTransfer = 3;
+}
+
+message QueryFbaWarehouseProductsRequest {
+  int32 account_id = 1;
+  string marketplace_id = 2;
+  int32 take = 3;
+  int32 skip = 4;
+}
+
+message QueryFbaWarehouseProductsReply {
+  repeated FbaWarehouseProduct products = 1;
+}
+
+message FbaWarehouseProduct {
+  int32 product_id = 1;
+  repeated InventoryItem inventory_items = 3;
+}
+
+message InventoryItem {
+  int32 product_id = 1;
+  InventoryKind kind = 2;
+  int32 quantity = 3;
+  string warehouse_id = 4;
+}
+
+enum InventoryKind {
+  InventoryKindUnknown = 0;
+  Completed = 1;
+  Pending = 2;
+  Hold = 3;
+}
