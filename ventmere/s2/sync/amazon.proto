@@ -1,5 +1,5 @@
 syntax = "proto3";
-package amazon;
+package ventmere.s2.sync.amazon;
 
 import "google/protobuf/empty.proto";
 
