@@ -1,0 +1,23 @@
+syntax = "proto3";
+package amazon;
+
+import "google/protobuf/empty.proto";
+
+service S2SyncAmazon {
+  // Push ASIN -> Product hint data
+  rpc UpdateAsinProductHint(UpdateAsinProductHintRequest)
+      returns (google.protobuf.Empty) {}
+}
+
+message UpdateAsinProductHintRequest {
+  repeated AsinProductHint items = 1;
+  // If true, remove all items not in supplied items.
+  bool full = 2;
+}
+
+message AsinProductHint {
+  string country_id = 1;
+  string asin = 2;
+  int32 product_id = 3;
+  int32 brand_id = 4;
+}
