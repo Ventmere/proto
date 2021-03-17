@@ -17,6 +17,9 @@ service S2Inventory {
 
   rpc QueryWarehouseEventsSum(QueryWarehouseEventsSumRequest)
       returns (QueryWarehouseEventsSumReply) {}
+
+  rpc GetInventoryWarehouses(google.protobuf.Empty)
+      returns (GetInventoryWarehousesReply) {}
 }
 
 message QueryWarehouseEventsSumRequest {
@@ -163,4 +166,8 @@ enum InventoryKind {
   Completed = 1;
   Pending = 2;
   Hold = 3;
+}
+
+message GetInventoryWarehousesReply {
+  repeated InventoryWarehouse warehouses = 1;
 }
