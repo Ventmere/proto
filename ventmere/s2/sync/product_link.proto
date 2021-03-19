@@ -1,0 +1,41 @@
+syntax = "proto3";
+package ventmere.s2.sync.product_link;
+
+import "google/protobuf/wrappers.proto";
+
+service S2SyncProductLink {
+  // Push ASIN -> Product hint data
+  rpc GetLinkedChannelIds(GetLinkedChannelIdsRequest)
+      returns (GetLinkedChannelIdsReply) {}
+  rpc GetLinkedProductIds(GetLinkedProductIdsRequest)
+      returns (GetLinkedProductIdsReply) {}
+}
+
+message GetLinkedChannelIdsRequest {
+  LinkScope scope = 1;
+  repeated string channel_ids = 2;
+}
+
+message GetLinkedChannelIdsReply {
+  repeated Link links = 1;
+}
+
+message GetLinkedProductIdsRequest {
+  LinkScope scope = 1;
+  repeated int32 product_ids = 2;
+}
+
+message GetLinkedProductIdsReply {
+  repeated Link links = 1;
+}
+
+message Link {
+  google.protobuf.StringValue channel_id = 1;
+  google.protobuf.Int32Value product_id = 2;
+}
+
+message LinkScope {
+  int32 account_id = 1;
+  google.protobuf.StringValue sub_account_id = 2;
+  string kind = 3;
+}
