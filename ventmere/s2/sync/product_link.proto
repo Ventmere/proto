@@ -4,11 +4,11 @@ package ventmere.s2.sync.product_link;
 import "google/protobuf/wrappers.proto";
 
 service S2SyncProductLink {
-  // Push ASIN -> Product hint data
   rpc GetLinkedChannelIds(GetLinkedChannelIdsRequest)
       returns (GetLinkedChannelIdsReply) {}
   rpc GetLinkedProductIds(GetLinkedProductIdsRequest)
       returns (GetLinkedProductIdsReply) {}
+  rpc ListLinked(ListLinkedRequest) returns (ListLinkedReply) {}
 }
 
 message GetLinkedChannelIdsRequest {
@@ -16,17 +16,23 @@ message GetLinkedChannelIdsRequest {
   repeated string channel_ids = 2;
 }
 
-message GetLinkedChannelIdsReply {
-  repeated Link links = 1;
-}
+message GetLinkedChannelIdsReply { repeated Link links = 1; }
 
 message GetLinkedProductIdsRequest {
   LinkScope scope = 1;
   repeated int32 product_ids = 2;
 }
 
-message GetLinkedProductIdsReply {
+message GetLinkedProductIdsReply { repeated Link links = 1; }
+
+message ListLinkedRequest {
+  LinkScope scope = 1;
+  google.protobuf.StringValue next_token = 2;
+}
+
+message ListLinkedReply {
   repeated Link links = 1;
+  google.protobuf.StringValue next_token = 2;
 }
 
 message Link {
