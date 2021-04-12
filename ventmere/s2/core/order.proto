@@ -1,0 +1,132 @@
+syntax = "proto3";
+package ventmere.s2.core.order;
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+
+service S2Order {
+  rpc ImportOrder(ImportOrderRequest)
+    returns (ImportOrderReply) {}
+  rpc CreatePickupFulfillment(CreatePickupFulfillmentRequest)
+    returns (CreatePickupFulfillmentReply) {}
+  rpc CompletePickupFulfillment(CompletePickupFulfillmentRequest)
+    returns (google.protobuf.Empty) {}
+  rpc CancelFulfillment(CancelFulfillmentRequest)
+    returns (google.protobuf.Empty) {}
+}
+
+message ImportOrderRequest {
+  OrderData order = 1;
+}
+
+message ImportOrderReply {
+  int32 order_id = 1;
+}
+
+message CreatePickupFulfillmentRequest {
+  int32 order_id = 1;
+  string warehouse_id = 2;
+}
+message CreatePickupFulfillmentReply { int32 fulfillment_id = 1; }
+
+message CompletePickupFulfillmentRequest {
+  int32 fulfillment_id = 1;
+}
+
+message CancelFulfillmentRequest {
+  int32 fulfillment_id = 1;
+}
+
+message OrderData {
+  string channel_id = 1;
+  string sub_channel_id = 2;
+  int32 channel_account_id = 3;
+  string channel_order_id = 4;
+  google.protobuf.StringValue channel_order_id_alt = 5;
+  google.protobuf.StringValue channel_order_id_alt2 = 6;
+  string currency_id = 7;
+  google.protobuf.Timestamp order_date = 8;
+  google.protobuf.Timestamp ship_by_date = 9;
+  OrderAddress shipping_address = 10;
+  OrderAddress billing_address = 11;
+  string email = 12;
+  OrderStatus status = 13;
+  repeated OrderDataItem items = 14;
+  repeated OrderItemEntry item_entries = 15;
+  google.protobuf.Value meta = 16;
+  OrderShippingMethod shipping_method = 17;
+  google.protobuf.StringValue channel_shipping_method = 18;
+  OrderFulfillmentChannel fulfillment_channel = 19;
+  string version = 20;
+  google.protobuf.Timestamp channel_updated_at = 21;
+  google.protobuf.StringValue channel_po_id = 22;
+  // Option<Vec<String>>
+  repeated string additional_search_terms = 23;
+  google.protobuf.BoolValue tax_included = 24;
+}
+
+message OrderDataItem {
+  google.protobuf.StringValue item_id = 1;
+  google.protobuf.Int32Value product_id = 2;
+  string channel_sku = 3;
+  double price = 4;
+  int32 quantity = 5;
+  google.protobuf.Value meta = 6;
+}
+
+message OrderItemEntry {
+  google.protobuf.StringValue item_id = 1;
+  string entry_type = 2;
+  OrderItemEntryKind entry_kind = 3;
+  string description = 4;
+  string currency_id = 5;
+  double amount = 6;
+}
+
+message OrderAddress {
+  string name = 1;
+  string address1 = 2;
+  google.protobuf.StringValue address2 = 3;
+  string city = 4;
+  string province = 5;
+  string country_id = 6;
+  string zip = 7;
+  string phone = 8;
+}
+
+enum OrderStatus {
+  OrderStatusUnknown = 0;
+  OrderStatusPending = 1;
+  OrderStatusUnfulfilled = 2;
+  OrderStatusPartiallyFulfilled = 3;
+  OrderStatusFulfilled = 4;
+  OrderStatusCancelled = 5;
+  OrderStatusInProgress = 6;
+  OrderStatusError = 7;
+  OrderStatusSyncError = 8;
+}
+
+enum OrderShippingMethod {
+  OrderShippingMethodUnknown = 0;
+  OrderShippingMethodStandard = 1;
+  OrderShippingMethodExpedited = 2;
+  OrderShippingMethodPriority = 3;
+}
+
+enum OrderFulfillmentChannel {
+  OrderFulfillmentChannelUnknown = 0;
+  OrderFulfillmentChannelFba = 1;
+  OrderFulfillmentChannelMerchant = 2;
+}
+
+enum OrderItemEntryKind {
+  OrderItemEntryKindUnknown = 0;
+  OrderItemEntryKindPrice = 1;
+  OrderItemEntryKindDiscount = 2;
+  OrderItemEntryKindHandling = 3;
+  OrderItemEntryKindShipping = 4;
+  OrderItemEntryKindTax = 5;
+  OrderItemEntryKindOther = 6;
+}
