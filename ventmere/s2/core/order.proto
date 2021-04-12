@@ -64,7 +64,7 @@ message OrderData {
   google.protobuf.StringValue channel_po_id = 22;
   // Option<Vec<String>>
   repeated string additional_search_terms = 23;
-  google.protobuf.BoolValue tax_included = 24;
+  google.protobuf.BoolValue taxes_included = 24;
 }
 
 message OrderDataItem {
