@@ -7,23 +7,31 @@ import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
 service S2Order {
-  rpc ImportOrder(ImportOrderRequest)
-    returns (ImportOrderReply) {}
+  rpc QueryLastChannelUpdatedDate(QueryLastChannelUpdatedDateRequest)
+      returns (QueryLastChannelUpdatedDateReply) {}
+  rpc ImportOrders(ImportOrdersRequest) returns (google.protobuf.Empty) {}
+  rpc ImportOrder(ImportOrderRequest) returns (ImportOrderReply) {}
   rpc CreatePickupFulfillment(CreatePickupFulfillmentRequest)
-    returns (CreatePickupFulfillmentReply) {}
+      returns (CreatePickupFulfillmentReply) {}
   rpc CompletePickupFulfillment(CompletePickupFulfillmentRequest)
-    returns (google.protobuf.Empty) {}
+      returns (google.protobuf.Empty) {}
   rpc CancelFulfillment(CancelFulfillmentRequest)
-    returns (google.protobuf.Empty) {}
+      returns (google.protobuf.Empty) {}
 }
 
-message ImportOrderRequest {
-  OrderData order = 1;
+message QueryLastChannelUpdatedDateRequest {
+  string channel_id = 1;
+  int32 account_id = 2;
+  google.protobuf.StringValue sub_channel_id = 3;
 }
 
-message ImportOrderReply {
-  int32 order_id = 1;
-}
+message QueryLastChannelUpdatedDateReply { google.protobuf.Timestamp date = 1; }
+
+message ImportOrdersRequest { repeated OrderData orders = 1; }
+
+message ImportOrderRequest { OrderData order = 1; }
+
+message ImportOrderReply { int32 order_id = 1; }
 
 message CreatePickupFulfillmentRequest {
   int32 order_id = 1;
@@ -31,13 +39,9 @@ message CreatePickupFulfillmentRequest {
 }
 message CreatePickupFulfillmentReply { int32 fulfillment_id = 1; }
 
-message CompletePickupFulfillmentRequest {
-  int32 fulfillment_id = 1;
-}
+message CompletePickupFulfillmentRequest { int32 fulfillment_id = 1; }
 
-message CancelFulfillmentRequest {
-  int32 fulfillment_id = 1;
-}
+message CancelFulfillmentRequest { int32 fulfillment_id = 1; }
 
 message OrderData {
   string channel_id = 1;
