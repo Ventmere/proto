@@ -9,6 +9,7 @@ service S2SyncShopify {
 message ImportPickupOrderRequest {
   int32 account_id = 1;
   string legacy_order_id = 2;
+  string linked_warehouse_id = 3;
 }
 
 message ImportPickupOrderReply { int32 order_id = 1; }
