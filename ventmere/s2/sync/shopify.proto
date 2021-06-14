@@ -1,0 +1,14 @@
+syntax = "proto3";
+package ventmere.s2.sync.shopify;
+
+service S2SyncShopify {
+  rpc ImportPickupOrder(ImportPickupOrderRequest)
+      returns (ImportPickupOrderReply) {}
+}
+
+message ImportPickupOrderRequest {
+  int32 account_id = 1;
+  string legacy_order_id = 2;
+}
+
+message ImportPickupOrderReply { int32 order_id = 1; }
