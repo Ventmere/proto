@@ -4,6 +4,8 @@ package ventmere.s2.sync.shopify;
 service S2SyncShopify {
   rpc ImportPickupOrder(ImportPickupOrderRequest)
       returns (ImportPickupOrderReply) {}
+  rpc GetLinkedVariants(GetLinkedVariantsRequest)
+      returns (GetLinkedVariantsReply) {}
 }
 
 message ImportPickupOrderRequest {
@@ -15,4 +17,18 @@ message ImportPickupOrderRequest {
 message ImportPickupOrderReply {
   int32 order_id = 1;
   int32 fulfillment_id = 2;
+}
+
+message GetLinkedVariantsRequest {
+  int32 account_id = 1;
+}
+
+message GetLinkedVariantsReply {
+  repeated LinkedVariant variants = 1;
+}
+
+message LinkedVariant {
+  string shopify_sku = 1;
+  int64 shopify_id = 2;
+  int32 product_id = 3;
 }
