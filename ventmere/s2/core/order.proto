@@ -123,6 +123,7 @@ enum OrderFulfillmentChannel {
   OrderFulfillmentChannelUnknown = 0;
   OrderFulfillmentChannelFba = 1;
   OrderFulfillmentChannelMerchant = 2;
+  OrderFulfillmentChannelWfs = 3;
 }
 
 enum OrderItemEntryKind {
