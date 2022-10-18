@@ -6,6 +6,8 @@ import "google/protobuf/wrappers.proto";
 import "google/protobuf/timestamp.proto";
 import "google/protobuf/struct.proto";
 
+import "ventmere/s2/core/auth.proto";
+
 service S2Order {
   rpc QueryLastChannelUpdatedDate(QueryLastChannelUpdatedDateRequest)
       returns (QueryLastChannelUpdatedDateReply) {}
@@ -17,6 +19,9 @@ service S2Order {
       returns (google.protobuf.Empty) {}
   rpc CancelFulfillment(CancelFulfillmentRequest)
       returns (google.protobuf.Empty) {}
+  rpc QueryAccountOpenOrders(QueryAccountOpenOrdersRequest)
+      returns (QueryAccountOpenOrdersReply) {}
+  rpc GetOrder(GetOrderRequest) returns (GetOrderReply) {}
 }
 
 message QueryLastChannelUpdatedDateRequest {
@@ -42,6 +47,24 @@ message CreatePickupFulfillmentReply { int32 fulfillment_id = 1; }
 message CompletePickupFulfillmentRequest { int32 fulfillment_id = 1; }
 
 message CancelFulfillmentRequest { int32 fulfillment_id = 1; }
+
+message QueryAccountOpenOrdersRequest {
+  int32 channel_account_id = 1;
+  google.protobuf.StringValue sub_channel_id = 2;
+  google.protobuf.Timestamp before_date = 3;
+}
+
+message QueryAccountOpenOrdersReply {
+  repeated OpenOrder orders = 1;
+}
+
+message GetOrderRequest {
+  int32 id = 1;
+}
+
+message GetOrderReply {
+  Order order = 1;
+}
 
 message OrderData {
   string channel_id = 1;
@@ -71,6 +94,45 @@ message OrderData {
   google.protobuf.BoolValue taxes_included = 24;
 }
 
+message Order {
+  int32 id = 1;
+  string channel_id = 2;
+  string sub_channel_id = 3;
+  int32 channel_account_id = 4;
+  string channel_order_id = 5;
+  google.protobuf.StringValue channel_order_id_alt = 6;
+  google.protobuf.StringValue channel_order_id_alt2 = 7;
+  string currency_id = 8;
+  google.protobuf.Timestamp order_date = 9;
+  google.protobuf.Timestamp ship_by_date = 10;
+  OrderAddress shipping_address = 11;
+  OrderAddress billing_address = 12;
+  string email = 13;
+  OrderStatus status = 14;
+  repeated OrderItem items = 15;
+  repeated OrderItemEntry item_entries = 16;
+  bool is_archived = 17;
+  google.protobuf.Timestamp created_at = 18;
+  google.protobuf.Timestamp updated_at = 19;
+  OrderShippingMethod shipping_method = 20;
+  OrderFulfillmentChannel fulfillment_channel = 21;
+  google.protobuf.StringValue channel_shipping_method = 22;
+  google.protobuf.StringValue channel_po_id = 23;
+  google.protobuf.Value meta = 24;
+  ventmere.s2.core.auth.UserEntry created_by = 25;
+  bool taxes_included = 26;
+}
+
+message OpenOrder {
+  int32 id = 1;
+  string channel_order_id = 2;
+  google.protobuf.StringValue channel_order_id_alt = 3;
+  google.protobuf.StringValue channel_order_id_alt2 = 4;
+  google.protobuf.StringValue channel_po_id = 5;
+  OrderStatus status = 6;
+  OrderFulfillmentChannel fulfillment_channel = 7;
+}
+
 message OrderDataItem {
   google.protobuf.StringValue item_id = 1;
   google.protobuf.Int32Value product_id = 2;
@@ -78,6 +140,16 @@ message OrderDataItem {
   double price = 4;
   int32 quantity = 5;
   google.protobuf.Value meta = 6;
+}
+
+message OrderItem {
+  int32 id = 1;
+  google.protobuf.StringValue item_id = 2;
+  google.protobuf.Int32Value product_id = 3;
+  string channel_sku = 4;
+  double price = 5;
+  int32 quantity = 6;
+  google.protobuf.Value meta = 7;
 }
 
 message OrderItemEntry {
@@ -88,6 +160,7 @@ message OrderItemEntry {
   string currency_id = 5;
   double amount = 6;
 }
+
 
 message OrderAddress {
   string name = 1;

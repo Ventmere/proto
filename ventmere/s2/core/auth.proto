@@ -1,0 +1,13 @@
+syntax = "proto3";
+package ventmere.s2.core.auth;
+
+import "google/protobuf/timestamp.proto";
+
+message UserEntry {
+  int32 id = 1;
+  string name = 2;
+  string email = 3;
+  bool active = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+}
