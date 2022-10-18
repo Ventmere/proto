@@ -1,11 +1,49 @@
 syntax = "proto3";
 package ventmere.s2.core.inbound_shipment;
 
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/timestamp.proto";
+import "google/protobuf/struct.proto";
+import "google/protobuf/empty.proto";
+
 service S2InboundShipment {
   rpc GetAllOpenShipmentChannelIds(GetAllOpenShipmentChannelIdsRequest)
       returns (GetAllOpenShipmentChannelIdsReply) {}
+  rpc ImportShipments(ImportShipmentsRequest)
+      returns (google.protobuf.Empty) {}
 }
 
 message GetAllOpenShipmentChannelIdsRequest { int32 channel_account_id = 1; }
 
 message GetAllOpenShipmentChannelIdsReply { repeated string ids = 1; }
+
+message ImportShipmentsRequest { repeated InboundShipmentData shipments = 1; }
+
+message InboundShipmentData {
+  string id = 1;
+  string channel_id = 2;
+  int32 channel_account_id = 3;
+  string channel_shipment_id = 4;
+  InboundShipmentStatus status = 5;
+  repeated InboundShipmentDataItem items = 6;
+  google.protobuf.Value meta = 7;
+  google.protobuf.Timestamp channel_updated_before = 8;
+  google.protobuf.Timestamp eta = 9;
+}
+
+enum InboundShipmentStatus {
+  Unknown = 0;
+  Pending = 1;
+  Canceled = 2;
+  Completed = 3;
+  Error = 4;
+}
+
+message InboundShipmentDataItem {
+  string channel_sku = 1;
+  google.protobuf.Int32Value product_id = 2;
+  int32 quantity_shipped = 3;
+  int32 quantity_received = 4;
+  int32 quantity_in_case = 5;
+  google.protobuf.Value meta = 6;
+}
