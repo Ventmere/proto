@@ -2,12 +2,24 @@ syntax = "proto3";
 package ventmere.s2.core.auth;
 
 import "google/protobuf/timestamp.proto";
+import "ventmere/s2/core/brand.proto";
 
 message UserEntry {
   int32 id = 1;
   string name = 2;
   string email = 3;
   bool active = 4;
+  google.protobuf.Timestamp created_at = 5;
+  google.protobuf.Timestamp updated_at = 6;
+  repeated RoleEntry roles = 7;
+  repeated ventmere.s2.core.brand.Brand brands = 8;
+}
+
+message RoleEntry {
+  int32 id = 1;
+  string name = 2;
+  string description = 3;
+  repeated string privileges = 4;
   google.protobuf.Timestamp created_at = 5;
   google.protobuf.Timestamp updated_at = 6;
 }
