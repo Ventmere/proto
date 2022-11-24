@@ -1,0 +1,20 @@
+syntax = "proto3";
+package ventmere.s2.core.settings;
+
+import "google/protobuf/empty.proto";
+
+service S2Settings {
+  rpc GetFulfillmentWarehouseMappings(google.protobuf.Empty)
+      returns (GetFulfillmentWarehouseMappingsReply) {}
+}
+
+message GetFulfillmentWarehouseMappingsReply {
+    repeated FulfillmentWarehouseMapping mappings = 1;
+}
+
+message FulfillmentWarehouseMapping {
+  int32 channel_account_id = 1;
+  int32 reserved_quantity = 2;
+  string sub_channel_id = 3;
+  repeated string warehouses = 4;
+}
